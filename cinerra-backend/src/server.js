@@ -27,7 +27,11 @@ import cors from "cors";
 const app = express();
 
 app.use(cors({
-  origin: "https://cinerra.vercel.app/",
+  origin: [
+    "http://localhost:5173", // local frontend
+    "https://cinerra.vercel.app", // production
+    "https://cinerra-git-main-gauravkumar160803s-projects.vercel.app" // preview
+  ],
   credentials: true
 }));
 
