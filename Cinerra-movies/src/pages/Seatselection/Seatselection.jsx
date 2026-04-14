@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import SeatselectionUI from "./SeatselectionUI";
+import Loader from "../../components/Loader"; // 🔥 ADD
 
 import { fetchShow, fetchShowBookings } from "../../api";
 
@@ -11,6 +12,7 @@ export default function Seatselection() {
 
   const [showData, setShowData] = useState(null);
   const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(true); // 🔥 ADD
 
   // 🔹 Load show once
   useEffect(() => {
@@ -23,6 +25,8 @@ export default function Seatselection() {
       } catch (err) {
         console.error("Error fetching show:", err);
         setShowData(null);
+      } finally {
+        setLoading(false); // 🔥 IMPORTANT
       }
     };
 
@@ -51,22 +55,27 @@ export default function Seatselection() {
     interval = setInterval(loadBookings, 3000);
 
     return () => clearInterval(interval);
-
   }, [id]);
 
   return (
     <>
       <Navbar />
 
-      {showData && (
-        <SeatselectionUI showData={showData} bookings={bookings} />
+      {/* 🔥 LOADER */}
+      {loading ? (
+        <Loader />
+      ) : (
+        <>
+          {showData && (
+            <SeatselectionUI showData={showData} bookings={bookings} />
+          )}
+        </>
       )}
 
       <Footer />
     </>
   );
 }
-
 
 
 

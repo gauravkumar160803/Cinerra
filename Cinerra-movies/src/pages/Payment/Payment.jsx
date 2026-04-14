@@ -3,12 +3,14 @@ import { useParams } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import PaymentPage from "./PaymentPage";
+import Loader from "../../components/Loader"; // 🔥 ADD
 import { fetchBookingById } from "../../api";
 import { useClerk } from "@clerk/clerk-react";
 
 export default function Payment() {
   const { id: bookingId } = useParams();
   const [bookingData, setBookingData] = useState(null);
+  const [loading, setLoading] = useState(true); // 🔥 ADD
   const { openSignIn } = useClerk();
 
   useEffect(() => {
@@ -18,30 +20,37 @@ export default function Payment() {
       try {
         const data = await fetchBookingById(bookingId);
         setBookingData(data);
-
       } catch (err) {
-
-        if (err.message === "LOGIN_REQUIRED") { 
+        if (err.message === "LOGIN_REQUIRED") {
           openSignIn();
           return;
         }
 
         console.error("Failed to fetch booking:", err);
         setBookingData(null);
+      } finally {
+        setLoading(false); // 🔥 IMPORTANT
       }
     };
 
     loadBooking();
-
   }, [bookingId, openSignIn]);
 
   return (
     <>
       <Navbar />
-      {bookingData && <PaymentPage data={bookingData} />}
+
+      {/* 🔥 LOADER */}
+      {loading ? (
+        <Loader />
+      ) : (
+        <>
+          {bookingData && <PaymentPage data={bookingData} />}
+        </>
+      )}
+
       <Footer />
     </>
   );
 }
-
 

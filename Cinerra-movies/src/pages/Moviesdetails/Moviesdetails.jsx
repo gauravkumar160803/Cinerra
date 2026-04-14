@@ -6,37 +6,49 @@ import MoviesdetailsHero from "./MoviesdetailsHero";
 import AboutMovies from "./AboutMovies";
 import Cast from "./Cast";
 import Crew from "./Crew";
-import { fetchMovie } from "../../api"; // <- use single-movie fetch
+import { fetchMovie } from "../../api";
+import Loader from "../../components/Loader"; // 🔥 ADD
 
 export default function Moviesdetails() {
   const { id } = useParams();
   const [movie, setMovie] = useState(null);
+  const [loading, setLoading] = useState(true); // 🔥 ADD
 
   useEffect(() => {
     if (!id) return;
 
-    fetchMovie(id)
-      .then((data) => {
-        // if API returns null/undefined when not found, setMovie(null)
+    const loadMovie = async () => {
+      try {
+        const data = await fetchMovie(id);
         setMovie(data ?? null);
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error("Error fetching movie by id:", err);
         setMovie(null);
-      });
+      } finally {
+        setLoading(false); // 🔥 IMPORTANT
+      }
+    };
+
+    loadMovie();
   }, [id]);
 
   return (
     <>
       <Navbar />
 
-      {/* render children only when movie is available */}
-      {movie && (
+      {/* 🔥 LOADER */}
+      {loading ? (
+        <Loader />
+      ) : (
         <>
-          <MoviesdetailsHero movie={movie} />
-          <AboutMovies movie={movie} />
-          <Cast movie={movie} />
-          <Crew movie={movie} />
+          {movie && (
+            <>
+              <MoviesdetailsHero movie={movie} />
+              <AboutMovies movie={movie} />
+              <Cast movie={movie} />
+              <Crew movie={movie} />
+            </>
+          )}
         </>
       )}
 

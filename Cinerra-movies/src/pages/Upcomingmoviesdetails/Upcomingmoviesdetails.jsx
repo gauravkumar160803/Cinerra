@@ -6,37 +6,49 @@ import UpcomingHero from "./UpcomingHero";
 import UpcomingAbout from "./UpcomingAbout";
 import UpcomingCast from "./UpcomingCast";
 import UpcomingCrew from "./UpcomingCrew";
-import { fetchUpcoming } from "../../api"; // <- use single-movie fetch
+import Loader from "../../components/Loader"; // 🔥 ADD
+import { fetchUpcoming } from "../../api";
 
 export default function Upcomingmoviesdetails() {
   const { id } = useParams();
   const [upcoming, setUpcoming] = useState(null);
+  const [loading, setLoading] = useState(true); // 🔥 ADD
 
   useEffect(() => {
     if (!id) return;
 
-    fetchUpcoming(id)
-      .then((data) => {
-        // if API returns null/undefined when not found, setMovie(null)
+    const loadUpcoming = async () => {
+      try {
+        const data = await fetchUpcoming(id);
         setUpcoming(data ?? null);
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error("Error fetching movie by id:", err);
         setUpcoming(null);
-      });
+      } finally {
+        setLoading(false); // 🔥 IMPORTANT
+      }
+    };
+
+    loadUpcoming();
   }, [id]);
 
   return (
     <>
       <Navbar />
 
-      {/* render children only when movie is available */}
-      {upcoming && (
+      {/* 🔥 LOADER */}
+      {loading ? (
+        <Loader />
+      ) : (
         <>
-          <UpcomingHero upcoming={upcoming} />
-          <UpcomingAbout upcoming={upcoming} />
-          <UpcomingCast upcoming={upcoming} />
-          <UpcomingCrew upcoming={upcoming} />
+          {upcoming && (
+            <>
+              <UpcomingHero upcoming={upcoming} />
+              <UpcomingAbout upcoming={upcoming} />
+              <UpcomingCast upcoming={upcoming} />
+              <UpcomingCrew upcoming={upcoming} />
+            </>
+          )}
         </>
       )}
 
