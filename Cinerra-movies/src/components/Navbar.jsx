@@ -201,20 +201,28 @@ export default function Navbar() {
                     text-transform: uppercase;
                     margin: 0 0 12px;
                 }
-                .announce-item {
+               .announce-item {
                     display: flex;
-                    gap: 10px;
+                    gap: 12px;
                     align-items: flex-start;
-                    margin-bottom: 10px;
+                    margin-bottom: 12px;
+                    padding: 10px 12px;
+                    background: #f9fafb;
+                    border-radius: 10px;
+                    border: 0.5px solid #f3f4f6;
                 }
                 .announce-type-badge {
                     font-size: 10px;
-                    font-weight: 600;
-                    padding: 2px 8px;
+                    font-weight: 700;
+                    padding: 1px 7px;
                     border-radius: 20px;
                     white-space: nowrap;
                     flex-shrink: 0;
-                    margin-top: 1px;
+                    line-height: 18px;
+                    height: 18px;
+                    display: inline-flex;
+                    align-items: center;
+                    margin-top: 2px;
                 }
                 .announce-item-text {
                     font-size: 13px;
