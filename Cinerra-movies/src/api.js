@@ -1,11 +1,26 @@
+import { useAuth } from "@clerk/clerk-react";
+
 const BASE_URL = import.meta.env.VITE_API_URL || "/api";
 
 // 🔥 Universal request handler
 async function request(url, options = {}) {
+  // 🔥 GET TOKEN FROM CLERK
+  let token = null;
+
+  try {
+    // Clerk injects auth globally, so we access it like this:
+    if (window.Clerk) {
+      token = await window.Clerk.session?.getToken();
+    }
+  } catch (err) {
+    console.log("Token fetch error:", err);
+  }
+
   const res = await fetch(url, {
-    credentials: "include",
+    credentials: "include", // keeping it (no harm)
     headers: {
       "Content-Type": "application/json",
+      ...(token && { Authorization: `Bearer ${token}` }), // 🔥 TOKEN ADDED
       ...(options.headers || {})
     },
     ...options
