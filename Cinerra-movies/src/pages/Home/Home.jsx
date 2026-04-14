@@ -5,20 +5,31 @@ import Hero from "./Herosection";
 import InTheatresSection from "./InTheatresSection";
 import Footer from "../../components/Footer";
 import { fetchMovies } from "../../api";
+import Loader from "../../components/Loader"; // 🔥 ADD THIS
 
 export default function Home() {
   const [movies, setMovies] = useState([]);
-  const location = useLocation(); // 🔥 KEY
+  const [loading, setLoading] = useState(true); // 🔥 ADD THIS
+  const location = useLocation();
 
   useEffect(() => {
-    fetchMovies()
-      .then((data) => setMovies(data))
-      .catch((err) => console.error("Error fetching movies:", err));
+    const loadData = async () => {
+      try {
+        const data = await fetchMovies();
+        setMovies(data);
+      } catch (err) {
+        console.error("Error fetching movies:", err);
+      } finally {
+        setLoading(false); // 🔥 IMPORTANT
+      }
+    };
+
+    loadData();
   }, []);
 
-  // 🔥 THIS FIXES EVERYTHING
+  // 🔥 THIS FIXES HASH SCROLL
   useEffect(() => {
-    if (location.hash === "#intheater") {
+    if (location.hash === "#intheater" && movies.length > 0) {
       const el = document.getElementById("intheater");
       if (el) {
         const yOffset = -80;
@@ -32,20 +43,24 @@ export default function Home() {
         }, 50);
       }
     }
-  }, [location, movies]); // 🔥 important
+  }, [location, movies]);
 
   return (
     <>
       <Navbar />
 
-      {movies.length > 0 && <Hero movies={movies} />}
+      {/* 🔥 LOADER */}
+      {loading ? (
+        <Loader />
+      ) : (
+        <>
+          <Hero movies={movies} />
 
-      {/* MUST exist always */}
-      <div id="intheater">
-        {movies.length > 0 && (
-          <InTheatresSection movies={movies} />
-        )}
-      </div>
+          <div id="intheater">
+            <InTheatresSection movies={movies} />
+          </div>
+        </>
+      )}
 
       <Footer />
     </>
