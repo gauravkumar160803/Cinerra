@@ -1,6 +1,6 @@
 import { useFormContext, useFieldArray } from "react-hook-form";
 import FormField from "../components/FormField";
-import ImageUploader from "../components/ImageUploader";
+import ImageUploader from "../components/Imageuploader";
 import { inputClass } from "../components/inputClass";
 
 export default function CrewSection() {
