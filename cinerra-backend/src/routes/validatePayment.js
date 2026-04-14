@@ -40,18 +40,25 @@ router.post("/validate-payment", async (req, res) => {
             return res.status(400).json({ message: "Booking session expired" });
         }
 
-        // return existing order if user refreshed or double clicked
+        // 🔥 return existing order if already created
         if (booking.paymentIntentId) {
             const existingOrder = await razorpay.orders.fetch(booking.paymentIntentId);
             return res.json({
                 success: true,
                 order: existingOrder,
-                expiresAt: booking.expiresAt  // send expiry time to frontend for countdown timer
+                expiresAt: booking.expiresAt
             });
         }
 
+        // 🔥 FIX: ensure amount is integer (paise)
+        const amountInPaise = Math.round(Number(booking.totalPrice) * 100);
+
+        if (!Number.isInteger(amountInPaise)) {
+            return res.status(400).json({ message: "Invalid amount calculation" });
+        }
+
         const order = await razorpay.orders.create({
-            amount: booking.totalPrice * 100,
+            amount: amountInPaise,
             currency: "INR",
             receipt: booking.referenceCode,
             notes: {
@@ -59,7 +66,7 @@ router.post("/validate-payment", async (req, res) => {
             }
         });
 
-        // extend expiry to cover the payment window
+        // extend expiry
         booking.expiresAt = new Date(Date.now() + 8 * 60 * 1000);
         booking.paymentIntentId = order.id;
 
@@ -68,7 +75,7 @@ router.post("/validate-payment", async (req, res) => {
         res.json({
             success: true,
             order,
-            expiresAt: booking.expiresAt  // send expiry time to frontend for countdown timer
+            expiresAt: booking.expiresAt
         });
 
     } catch (err) {
