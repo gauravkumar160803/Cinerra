@@ -1,6 +1,6 @@
 export default function Loader() {
   return (
-    <div className="flex justify-center items-center min-h-[calc(100vh-80px)] bg-gray-100">
+    <div className="flex justify-center items-center min-h-[calc(100vh-80px)] bg-gray-100 mt-[80px]">
       
       <img
         src="/Logos/logo-transparent-png.png"
