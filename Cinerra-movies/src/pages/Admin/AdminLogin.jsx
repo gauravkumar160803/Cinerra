@@ -234,6 +234,7 @@ export default function AdminLogin() {
         }
         return;
       }
+      localStorage.setItem("adminVerified", "true");
       navigate("/adminform");
     } catch {
       setKeyError("Network error. Check your connection.");
@@ -317,10 +318,10 @@ export default function AdminLogin() {
                     </label>
 
                     <div className={`relative flex items-center rounded-xl border-2 transition-all duration-200 ${keyError
-                        ? "border-red-300 bg-red-50/40"
-                        : focused
-                          ? "border-[#8a3357] bg-white shadow-md shadow-[#8a3357]/10"
-                          : "border-gray-200 bg-gray-50 hover:border-gray-300"
+                      ? "border-red-300 bg-red-50/40"
+                      : focused
+                        ? "border-[#8a3357] bg-white shadow-md shadow-[#8a3357]/10"
+                        : "border-gray-200 bg-gray-50 hover:border-gray-300"
                       }`}>
                       <div className={`pl-4 shrink-0 transition-colors duration-200 ${focused ? "text-[#8a3357]" : "text-gray-300"}`}>
                         <LockIcon />

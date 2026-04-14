@@ -35,7 +35,13 @@ async function request(url, options = {}) {
     credentials: "include",
     headers: {
       "Content-Type": "application/json",
+
+      // 🔥 ADMIN FLAG (FIX)
+      "x-admin-verified": localStorage.getItem("adminVerified") || "false",
+
+      // 🔥 AUTH TOKEN
       ...(token && { Authorization: `Bearer ${token}` }),
+
       ...(options.headers || {})
     },
     ...options

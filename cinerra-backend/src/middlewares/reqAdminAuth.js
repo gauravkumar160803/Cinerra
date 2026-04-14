@@ -19,7 +19,7 @@ const reqAdminAuth = async (req, res, next) => {
         }
 
         // 3. Check if admin key was verified
-        if (!req.session.adminVerified) {
+        if (req.headers["x-admin-verified"] !== "true") {
             return res.status(403).json({
                 success: false,
                 message: "ADMIN_KEY_REQUIRED"
