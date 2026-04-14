@@ -1,7 +1,7 @@
 import { useFormContext } from "react-hook-form";
 import FormField from "../components/FormField";
 import ImageUploader from "../components/Imageuploader";
-import GenreSelector from "../components/GenreSelector";
+import GenreSelector from "../components/Genreselector";
 import { inputClass, textareaClass } from "../components/inputClass";
 
 export default function MovieDetailsSection() {
